@@ -1,0 +1,213 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+let mensaje = '';
+let error = '';
+
+// Manejar el envío del formulario
+if (Astro.request.method === 'POST') {
+  const formData = await Astro.request.formData();
+  const nombre = formData.get('nombre');
+  const descripcion = formData.get('descripcion');
+  const precio = parseFloat(formData.get('precio'));
+  const imagen_url = formData.get('imagen_url');
+
+  try {
+    const response = await fetch('/api/productos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        nombre,
+        descripcion,
+        precio,
+        imagen_url
+      })
+    });
+
+    const data = await response.json();
+    
+    if (response.ok) {
+      mensaje = '¡Producto agregado correctamente!';
+      // Limpiar el formulario
+      if (typeof document !== 'undefined') {
+        document.getElementById('productoForm')?.reset();
+      }
+    } else {
+      error = data.error || 'Error al agregar el producto';
+    }
+  } catch (err) {
+    console.error('Error al agregar producto:', err);
+    error = 'Error al conectar con el servidor';
+  }
+}
+---
+
+<Layout title="Agregar Producto">
+  <div class="max-w-2xl mx-auto py-8 px-4 sm:px-6 lg:px-8">
+    <h1 class="text-2xl font-bold text-gray-900 mb-8">Agregar Nuevo Producto</h1>
+
+    <form id="productoForm" class="space-y-6">
+      <div>
+        <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre del Producto</label>
+        <input
+          type="text"
+          id="nombre"
+          name="nombre"
+          required
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+      </div>
+
+      <div>
+        <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+        <textarea
+          id="descripcion"
+          name="descripcion"
+          rows="3"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        ></textarea>
+      </div>
+
+      <div>
+        <label for="precio" class="block text-sm font-medium text-gray-700">Precio</label>
+        <input
+          type="number"
+          id="precio"
+          name="precio"
+          step="0.01"
+          min="0"
+          required
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+      </div>
+
+      <div>
+        <label for="imagen_url" class="block text-sm font-medium text-gray-700">URL de la Imagen (opcional)</label>
+        <input
+          type="url"
+          id="imagen_url"
+          name="imagen_url"
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        />
+      </div>
+
+      <div id="message" class="hidden p-4 rounded-md"></div>
+
+      <div class="flex justify-end space-x-3">
+        <a 
+          href="/productos"
+          class="inline-flex justify-center rounded-md border border-gray-300 bg-white py-2 px-4 text-sm font-medium text-gray-700 shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Cancelar
+        </a>
+        <button
+          type="submit"
+          class="inline-flex justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Agregar Producto
+        </button>
+      </div>
+    </form>
+    
+    <div class="mt-8 text-center">
+      <a href="/productos" class="text-indigo-600 hover:text-indigo-800 hover:underline">
+        ← Volver a la lista de productos
+      </a>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const form = document.getElementById('productoForm');
+    const messageDiv = document.getElementById('message');
+    let submitBtn;
+
+    if (form && messageDiv) {
+      submitBtn = form.querySelector('button[type="submit"]');
+      
+      if (submitBtn) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          // Convertir FormData a objeto
+          const formData = new FormData(form);
+          const formDataObj = Object.fromEntries(formData.entries());
+          
+          try {
+            // Mostrar estado de carga
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Procesando...';
+            messageDiv.className = 'hidden';
+            
+            const response = await fetch('/api/productos', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify(formDataObj)
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+              // Mostrar mensaje de éxito
+              showMessage('¡Producto agregado exitosamente!', 'success');
+              form.reset();
+              
+              // Redirigir después de 1.5 segundos
+              setTimeout(() => {
+                window.location.href = '/productos';
+              }, 1500);
+            } else {
+              // Mostrar mensaje de error
+              showMessage(result.error || 'Error al guardar el producto', 'error');
+              if (result.details) {
+                console.error('Detalles del error:', result.details);
+              }
+            }
+          } catch (error) {
+            console.error('Error:', error);
+            const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+            showMessage(`Error de conexión: ${errorMessage}`, 'error');
+          } finally {
+            // Restaurar el botón
+            submitBtn.disabled = false;
+            submitBtn.textContent = 'Agregar Producto';
+          }
+        });
+      }
+    }
+
+    /**
+     * Muestra un mensaje al usuario
+     * @param {string} message - El mensaje a mostrar
+     * @param {'error'|'success'|'info'} type - El tipo de mensaje
+     */
+    function showMessage(message, type = 'info') {
+      if (messageDiv) {
+        messageDiv.textContent = message;
+        
+        // Limpiar clases existentes
+        messageDiv.className = 'p-4 rounded-md';
+        
+        // Añadir clases según el tipo
+        if (type === 'error') {
+          messageDiv.classList.add('bg-red-100', 'text-red-800');
+        } else if (type === 'success') {
+          messageDiv.classList.add('bg-green-100', 'text-green-800');
+        } else {
+          messageDiv.classList.add('bg-blue-100', 'text-blue-800');
+        }
+        
+        // Mostrar el mensaje
+        messageDiv.classList.remove('hidden');
+        
+        // Hacer scroll suave al mensaje
+        messageDiv.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+  });
+</script>
