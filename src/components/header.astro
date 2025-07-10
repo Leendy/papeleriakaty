@@ -1,0 +1,132 @@
+---
+// Agregamos el script para el menú móvil
+const menuItems = [
+  { name: 'Inicio', href: '/' },
+  { name: 'Productos', href: '#productos' },
+  { name: 'Servicios', href: '#servicios' },
+  { name: 'Contacto', href: '#contacto' },
+];
+---
+
+<header class="sticky top-0 z-50 bg-white shadow-md transition-all duration-300" id="header">
+  <div class="container mx-auto px-4">
+    <nav class="flex items-center justify-between h-20">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <a href="/" class="text-2xl font-bold text-indigo-600">Papelería Katy</a>
+      </div>
+
+      <!-- Menú de navegación para escritorio -->
+      <div class="hidden md:flex space-x-8">
+        {menuItems.map((item) => (
+          <a 
+            href={item.href} 
+            class="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+          >
+            {item.name}
+          </a>
+        ))}
+      </div>
+
+      <!-- Botón de menú móvil -->
+      <div class="md:hidden">
+        <button 
+          id="menu-toggle" 
+          class="text-gray-700 hover:text-indigo-600 focus:outline-none"
+          aria-label="Menú"
+        >
+          <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </nav>
+  </div>
+
+  <!-- Menú móvil desplegable -->
+  <div id="mobile-menu" class="md:hidden hidden bg-white shadow-lg">
+    <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3">
+      {menuItems.map((item) => (
+        <a 
+          href={item.href} 
+          class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
+        >
+          {item.name}
+        </a>
+      ))}
+    </div>
+  </div>
+</header>
+
+<!-- Script para el menú móvil -->
+<script>
+  const menuButton = document.getElementById('menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const header = document.getElementById('header');
+  let lastScroll = 0;
+
+  // Toggle del menú móvil
+  menuButton?.addEventListener('click', () => {
+    mobileMenu?.classList.toggle('hidden');
+    menuButton.setAttribute('aria-expanded', !mobileMenu?.classList.contains('hidden'));
+  });
+
+  // Cerrar menú al hacer clic en un enlace
+  document.querySelectorAll('#mobile-menu a').forEach(link => {
+    link.addEventListener('click', () => {
+      mobileMenu?.classList.add('hidden');
+      menuButton?.setAttribute('aria-expanded', 'false');
+    });
+  });
+
+  // Efecto de header al hacer scroll
+  window.addEventListener('scroll', () => {
+    const currentScroll = window.pageYOffset;
+    
+    if (currentScroll <= 0) {
+      header?.classList.remove('shadow-md');
+      return;
+    }
+    
+    if (currentScroll > lastScroll && currentScroll > 100) {
+      // Scroll hacia abajo
+      header?.classList.add('-translate-y-full');
+      header?.classList.remove('shadow-md');
+    } else {
+      // Scroll hacia arriba
+      header?.classList.remove('-translate-y-full');
+      header?.classList.add('shadow-md');
+    }
+    
+    lastScroll = currentScroll;
+  });
+</script>
+
+<style>
+  /* Transiciones suaves */
+  header {
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+  }
+  
+  /* Mejoras de accesibilidad */
+  [aria-expanded="true"] svg {
+    transform: rotate(90deg);
+  }
+  
+  [aria-expanded] svg {
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  /* Mejoras de usabilidad en móviles */
+  @media (max-width: 767px) {
+    #mobile-menu {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out;
+    }
+    
+    #mobile-menu:not(.hidden) {
+      max-height: 500px; /* Ajusta según la cantidad de elementos del menú */
+    }
+  }
+</style>
