@@ -11,16 +11,21 @@ export async function query(sql, params = []) {
     console.log('Ejecutando consulta:', sql);
     console.log('Parámetros:', params);
     
-    const [rows, fields] = await connection.execute(sql, params);
-    console.log('Consulta ejecutada correctamente');
+    const [rows] = await connection.execute(sql, params);
+    console.log('Consulta ejecutada correctamente. Resultado:', JSON.stringify(rows, null, 2));
     
     // Para consultas de inserción, retornar el resultado completo
     if (sql.trim().toUpperCase().startsWith('INSERT')) {
       return { insertId: rows.insertId };
     }
     
-    // Asegurarse de devolver un array para consultas SELECT
-    return Array.isArray(rows) ? rows : [];
+    // Para SELECT, devolver los resultados directamente
+    if (Array.isArray(rows)) {
+      return rows;
+    }
+    
+    // Para otros tipos de consultas (UPDATE, DELETE, etc.) devolver el resultado
+    return rows || [];
   } catch (error) {
     console.error('Error en la consulta SQL:', {
       message: error.message,

@@ -1,0 +1,253 @@
+---
+import Layout from '../../../layouts/Layout.astro';
+
+// Obtener el ID del producto de los parámetros de la ruta
+const { id } = Astro.params;
+
+// Obtener los datos del producto si estamos en el servidor
+let producto = null;
+let error = null;
+
+if (import.meta.env.SSR) {
+  try {
+    console.log('Buscando producto con ID:', id);
+    
+    // Construir la URL de la API correctamente
+    const baseUrl = import.meta.env.DEV ? 'http://localhost:3000' : '';
+    const apiUrl = `${baseUrl}/api/productos?id=${id}`;
+    
+    console.log('URL de la API:', apiUrl);
+    
+    // Mostrar información de la petición que se va a realizar
+    console.log('Realizando petición a:', apiUrl);
+    
+    const response = await fetch(apiUrl, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache'
+      },
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
+    
+    console.log('Estado de la respuesta:', response.status, response.statusText);
+    
+    const responseText = await response.text();
+    console.log('Contenido de la respuesta:', responseText);
+    
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status} ${response.statusText}`);
+    }
+    
+    try {
+      producto = JSON.parse(responseText);
+      console.log('Producto encontrado:', producto);
+    } catch (e) {
+      console.error('Error al analizar la respuesta JSON:', e);
+      error = `Error al procesar los datos del producto: ${e.message}`;
+    }
+    
+  } catch (err: unknown) {
+    let errorMessage = 'Error desconocido';
+    let errorName = 'UnknownError';
+    let errorStack: string | undefined;
+    let isNetworkError = false;
+
+    if (err instanceof Error) {
+      errorMessage = err.message;
+      errorName = err.name;
+      errorStack = err.stack;
+      isNetworkError = err.name === 'TypeError' && err.message.includes('Failed to fetch');
+    } else if (typeof err === 'string') {
+      errorMessage = err;
+    }
+    
+    console.error('Error en la petición:', {
+      name: errorName,
+      message: errorMessage,
+      stack: errorStack
+    });
+    
+    // Proporcionar más detalles sobre el error
+    error = `Error al conectar con el servidor: ${errorMessage}`;
+    
+    // Si es un error de red, sugerir verificar la conexión
+    if (isNetworkError) {
+      error += ' (Error de red - ¿El servidor está en ejecución?)';
+    }
+  }
+}
+---
+
+<Layout title={`Editar Producto ${producto?.nombre || ''}`}>
+  <div class="container mx-auto px-4 py-8">
+    <div class="max-w-2xl mx-auto">
+      <h1 class="text-2xl font-bold mb-6">
+        {producto ? `Editar: ${producto.nombre}` : 'Producto no encontrado'}
+      </h1>
+      
+      {error && (
+        <div class="mb-6 p-4 bg-red-100 border-l-4 border-red-500 text-red-700">
+          <p class="font-bold">Error</p>
+          <p>{error}</p>
+        </div>
+      )}
+
+      {error ? (
+        <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+          <p class="font-bold">Error</p>
+          <p>{error}</p>
+        </div>
+      ) : producto ? (
+        <form id="editarProductoForm" class="space-y-6">
+          <input type="hidden" name="id" value={producto.id} />
+          
+          <div>
+            <label for="nombre" class="block text-sm font-medium text-gray-700">Nombre</label>
+            <input 
+              type="text" 
+              id="nombre" 
+              name="nombre" 
+              value={producto.nombre}
+              required
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+          </div>
+
+          <div>
+            <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
+            <textarea 
+              id="descripcion" 
+              name="descripcion" 
+              rows="3"
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >{producto.descripcion || ''}</textarea>
+          </div>
+
+          <div>
+            <label for="precio" class="block text-sm font-medium text-gray-700">Precio</label>
+            <div class="mt-1 relative rounded-md shadow-sm">
+              <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <span class="text-gray-500 sm:text-sm">$</span>
+              </div>
+              <input 
+                type="number" 
+                id="precio" 
+                name="precio" 
+                value={producto.precio}
+                step="0.01"
+                min="0"
+                required
+                class="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+              >
+            </div>
+          </div>
+
+          <div>
+            <label for="imagen_url" class="block text-sm font-medium text-gray-700">URL de la imagen</label>
+            <input 
+              type="url" 
+              id="imagen_url" 
+              name="imagen_url" 
+              value={producto.imagen_url || ''}
+              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+            >
+            {producto.imagen_url && (
+              <div class="mt-2">
+                <p class="text-sm text-gray-500">Vista previa:</p>
+                <img 
+                  src={producto.imagen_url} 
+                  alt="Vista previa" 
+                  class="h-32 w-32 object-cover rounded mt-1"
+                  onerror="this.onerror=null;this.src='https://via.placeholder.com/150'"
+                />
+              </div>
+            )}
+          </div>
+
+          <div class="flex justify-end space-x-3">
+            <a 
+              href="/productos" 
+              class="bg-gray-200 hover:bg-gray-300 text-gray-800 font-medium py-2 px-4 rounded-md text-sm"
+            >
+              Cancelar
+            </a>
+            <button 
+              type="submit" 
+              class="bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md text-sm"
+            >
+              Guardar cambios
+            </button>
+          </div>
+        </form>
+      ) : null}
+    </div>
+  </div>
+
+  <!-- Script para manejar el envío del formulario -->
+  <script>
+    document.getElementById('editarProductoForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const form = e.target;
+      const formData = new FormData(form);
+      const data = Object.fromEntries(formData.entries());
+      
+      // Convertir precio a número
+      data.precio = parseFloat(data.precio);
+      
+      try {
+        // Asegurarse de que el precio sea un número
+        if (typeof data.precio === 'string') {
+          data.precio = parseFloat(data.precio);
+        }
+        
+        // Crear un objeto con solo los campos necesarios
+        const datosActualizados = {
+          nombre: data.nombre,
+          descripcion: data.descripcion,
+          precio: data.precio,
+          imagen_url: data.imagen_url
+        };
+        
+        const response = await fetch(`/api/productos/${data.id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(datosActualizados),
+        });
+        
+        const responseData = await response.json();
+        
+        if (response.ok) {
+          // Mostrar mensaje de éxito
+          alert('Producto actualizado correctamente');
+          window.location.href = '/productos';
+        } else {
+          throw new Error(responseData.error || 'Error al actualizar el producto');
+        }
+      } catch (error) {
+        alert(error.message || 'Error al actualizar el producto');
+        console.error('Error:', error);
+      }
+    });
+    
+    // Actualizar vista previa de la imagen cuando cambia la URL
+    const imagenUrlInput = document.getElementById('imagen_url');
+    const imagenPreview = document.querySelector('img[alt="Vista previa"]');
+    
+    if (imagenUrlInput && imagenPreview) {
+      imagenUrlInput.addEventListener('input', (e) => {
+        if (e.target.value) {
+          imagenPreview.src = e.target.value;
+          imagenPreview.style.display = 'block';
+        } else {
+          imagenPreview.style.display = 'none';
+        }
+      });
+    }
+  </script>
+</Layout>
