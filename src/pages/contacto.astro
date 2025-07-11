@@ -1,0 +1,119 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const contactInfo = {
+  phone: '+52 (844) 233-5076',
+  address: 'Amp: Heradura calle: Sicho #682 saltillo, Coahuila de Zaragoza',
+  hours: 'Lunes a Sabados: 9:00 AM - 10:00 PM\nDomingos: 11:00 AM - 09:00 PM'
+};
+---
+
+<MainLayout title="Contáctanos - Papeleria Katy">
+  <!-- Hero Section -->
+  <div class="bg-indigo-700">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:py-24 sm:px-6 lg:px-8 text-center">
+      <h1 class="text-4xl font-extrabold tracking-tight text-white sm:text-5xl lg:text-6xl">
+        Contáctanos
+      </h1>
+      <p class="mt-6 max-w-lg mx-auto text-xl text-indigo-100">
+        ¿Tienes alguna pregunta? Estamos aquí para ayudarte.
+      </p>
+    </div>
+  </div>
+
+  <!-- Contact Section -->
+  <div class="bg-white py-16 align-center justify-center">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="lg:grid lg:grid-cols-2 lg:gap-8">
+        <!-- Contact Information -->
+        <div class="max-w-lg mx-auto lg:max-w-none align-center justify-center">
+          <h2 class="text-2xl font-extrabold align-center text-gray-900 sm:text-3xl">Información de Contacto</h2>
+            <div class="mt-6 flex">
+              <div class="flex-shrink-0">
+                <i class="fab fa-whatsapp text-green-500 text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Teléfono</h3>
+                <p class="mt-1 text-gray-600">
+                  <a href={`tel:${contactInfo.phone.replace(/\D/g, '')}`} class="hover:text-indigo-500">
+                    {contactInfo.phone}
+                  </a>
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-6 flex">
+              <div class="flex-shrink-0">
+                <i class="fas fa-map-marker-alt text-indigo-500 text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Dirección</h3>
+                <p class="mt-1 text-gray-600 whitespace-pre-line">
+                  {contactInfo.address}
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-6 flex">
+              <div class="flex-shrink-0">
+                <i class="far fa-clock text-indigo-500 text-xl"></i>
+              </div>
+              <div class="ml-4">
+                <h3 class="text-lg font-medium text-gray-900">Horario de Atención</h3>
+                <p class="mt-1 text-gray-600 whitespace-pre-line">
+                  {contactInfo.hours}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Form -->
+        
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Map Section -->
+  <div class="bg-gray-100">
+    <div class="max-w-7xl mx-auto py-16 px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-extrabold text-gray-900 mb-8">Nuestra Ubicación</h2>
+      <div class="aspect-w-16 aspect-h-9 rounded-lg overflow-hidden">
+        <iframe 
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3596.0974!2d-100.9806249!3d25.401068!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xd08c5cf74f91eb6a!2sPapelaria%20y%20Merceria%20katy!5e0!3m2!1ses!2smx!4v1625960000000!5m2!1ses!2smx"
+          width="100%" 
+          height="450" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy"
+          class="rounded-lg shadow-lg w-full">
+        </iframe>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('contactForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+      
+      try {
+        // Aquí iría la lógica para enviar el formulario
+        console.log('Formulario enviado:', data);
+        
+        // Mostrar mensaje de éxito
+        alert('¡Gracias por tu mensaje! Nos pondremos en contacto contigo pronto.');
+        e.target.reset();
+      } catch (error) {
+        console.error('Error al enviar el formulario:', error);
+        alert('Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo más tarde.');
+      }
+    });
+  </script>
+</MainLayout>

@@ -1,0 +1,50 @@
+---
+import MainLayout from '../layouts/MainLayout.astro';
+
+const pageTitle = 'Cuadernos y Libretas';
+const pageDescription = 'Descubre nuestra amplia variedad de cuadernos y libretas para todas tus necesidades.';
+---
+
+<MainLayout title={pageTitle} description={pageDescription}>
+  <main class="min-h-screen bg-gray-50">
+    <!-- Hero Section -->
+    <section class="bg-indigo-700 text-white py-20">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl font-extrabold tracking-tight sm:text-5xl lg:text-6xl">
+          {pageTitle}
+        </h1>
+        <p class="mt-6 max-w-3xl mx-auto text-xl text-indigo-100">
+          {pageDescription}
+        </p>
+      </div>
+    </section>
+
+    <!-- Productos Section -->
+    <section class="py-16">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
+          <!-- Ejemplo de producto -->
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div class="p-6">
+              <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 text-3xl">
+                📚
+              </div>
+              <h3 class="text-xl font-semibold text-gray-900 text-center mb-2">
+                Cuaderno Profesional
+              </h3>
+              <p class="text-gray-600 text-center">
+                Cuaderno de 100 hojas rayadas, tapa dura, tamaño carta.
+              </p>
+              <div class="mt-4 text-center">
+                <span class="text-2xl font-bold text-gray-900">$12.99</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Puedes agregar más productos aquí -->
+          
+        </div>
+      </div>
+    </section>
+  </main>
+</MainLayout>

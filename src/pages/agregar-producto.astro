@@ -1,8 +1,19 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import pool from '../lib/db';
 
 let mensaje = '';
 let error = '';
+let categorias = [];
+
+// Obtener categorías de la base de datos
+try {
+  const [rows] = await pool.query('SELECT * FROM categorias ORDER BY nombre_categoria');
+  categorias = rows;
+} catch (err) {
+  console.error('Error al obtener categorías:', err);
+  error = 'Error al cargar las categorías';
+}
 
 // Manejar el envío del formulario
 if (Astro.request.method === 'POST') {
@@ -11,6 +22,7 @@ if (Astro.request.method === 'POST') {
   const descripcion = formData.get('descripcion');
   const precio = parseFloat(formData.get('precio'));
   const imagen_url = formData.get('imagen_url');
+  const id_categoria = parseInt(formData.get('categoria'));
 
   try {
     const response = await fetch('/api/productos', {
@@ -22,7 +34,8 @@ if (Astro.request.method === 'POST') {
         nombre,
         descripcion,
         precio,
-        imagen_url
+        imagen_url,
+        id_categoria
       })
     });
 
@@ -81,6 +94,26 @@ if (Astro.request.method === 'POST') {
           required
           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
         />
+      </div>
+
+      <div>
+        <label for="categoria" class="block text-sm font-medium text-gray-700">Categoría</label>
+        <select
+          id="categoria"
+          name="categoria"
+          required
+          class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+        >
+          {categorias.length > 0 ? (
+            categorias.map(categoria => (
+              <option value={categoria.id_categoria}>
+                {categoria.nombre_categoria}
+              </option>
+            ))
+          ) : (
+            <option value="" disabled>No hay categorías disponibles</option>
+          )}
+        </select>
       </div>
 
       <div>
