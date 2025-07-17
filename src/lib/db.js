@@ -1,21 +1,19 @@
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
-  host: '127.0.0.1',  // Usar 127.0.0.1 en lugar de localhost
-  user: 'root',
-  password: 'root',
-  database: 'papeleria',
+  host: process.env.DB_HOST || '127.0.0.1',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || 'root',
+  database: process.env.DB_NAME || 'papeleria',
   waitForConnections: true,
   connectionLimit: 10,
   queueLimit: 0,
-  // Agregar opciones de depuración
-  debug: true,
-  // Forzar reconexión si se pierde la conexión
+  debug: process.env.NODE_ENV === 'development',
   enableKeepAlive: true,
   keepAliveInitialDelay: 10000
 };
 
-console.log('Intentando conectar a la base de datos con la configuración:', {
+console.log('Configurando conexión a la base de datos con la configuración:', {
   ...dbConfig,
   password: '***' // No mostrar la contraseña en los logs
 });

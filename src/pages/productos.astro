@@ -4,11 +4,8 @@ import Layout from '../layouts/Layout.astro';
 
 <Layout title="Productos">
   <div class="container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-6">
+    <div class="mb-6">
       <h1 class="text-3xl font-bold">Nuestros Productos</h1>
-      <a href="/admin/nuevo-producto" class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-md text-sm font-medium">
-        Agregar Producto
-      </a>
     </div>
     
     <div class="overflow-x-auto">
@@ -30,9 +27,6 @@ import Layout from '../layouts/Layout.astro';
             <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
               Categoría
             </th>
-            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-              Acciones
-            </th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
@@ -41,6 +35,6 @@ import Layout from '../layouts/Layout.astro';
       </table>
     </div>
 
-  <!-- Script para manejar las acciones de editar y eliminar -->
+  <!-- Los productos se cargarán dinámicamente -->
   <script src="/js/productos.js" type="module"></script>
 </Layout>

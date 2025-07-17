@@ -1,23 +1,7 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
-import { parse } from 'cookie';
-import AuthService from '../lib/auth/auth.service';
 import Hero from '../components/hero.astro';
 import Productos from '../components/productos.astro';
-
-
-// Obtener información del usuario desde las cookies
-let user = null;
-const cookies = parse(Astro.request.headers.get('cookie') || '');
-
-if (cookies.auth_token) {
-  try {
-    user = AuthService.verifyToken(cookies.auth_token);
-  } catch (error) {
-    // Token inválido, limpiar cookie
-    Astro.cookies.set('auth_token', '', { path: '/', maxAge: 0 });
-  }
-}
 ---
 
 <MainLayout title="Inicio - Papeleria Katy">

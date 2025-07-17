@@ -1,0 +1,49 @@
+---
+import Layout from '../../layouts/utiles.astro';
+---
+
+<Layout title="Útiles Escolares | Papelería Katy">
+  <main class="min-h-screen py-8">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h1 class="text-3xl font-bold text-center my-8">Útiles Escolares</h1>
+      
+      <!-- Categorías de útiles -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-12">
+        <!-- Tarjeta de Lápices -->
+        <a href="/utiles/lapices" class="group block">
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full">
+            <div class="h-48 bg-gray-100 flex items-center justify-center">
+              <i class="fas fa-pencil-alt text-6xl text-gray-400 group-hover:text-indigo-500 transition-colors"></i>
+            </div>
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Lápices</h2>
+              <p class="mt-2 text-gray-600">Descubre nuestra variedad de lápices de grafito, colores y más.</p>
+              <div class="mt-4 text-indigo-600 font-medium group-hover:text-indigo-700 transition-colors">
+                Ver productos <i class="fas fa-arrow-right ml-1"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+        <a href="/utiles/boligrafos" class="group block">
+          <div class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow duration-300 h-full">
+            <div class="h-48 bg-gray-100 flex items-center justify-center">
+              <i class="fas fa-pencil-alt text-6xl text-gray-400 group-hover:text-indigo-500 transition-colors"></i>
+            </div>
+            <div class="p-6">
+              <h2 class="text-xl font-semibold text-gray-900 group-hover:text-indigo-600 transition-colors">Bolígrafos</h2>
+              <p class="mt-2 text-gray-600">Descubre nuestra variedad de lápices de grafito, colores y más.</p>
+              <div class="mt-4 text-indigo-600 font-medium group-hover:text-indigo-700 transition-colors">
+                Ver productos <i class="fas fa-arrow-right ml-1"></i>
+              </div>
+            </div>
+          </div>
+        </a>
+
+        <!-- Puedes agregar más categorías aquí -->
+        <div class="bg-gray-50 rounded-lg p-6 border-2 border-dashed border-gray-200 flex items-center justify-center">
+          <p class="text-gray-500">Próximamente más categorías</p>
+        </div>
+      </div>
+    </div>
+  </main>
+</Layout>

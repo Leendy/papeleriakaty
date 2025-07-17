@@ -1,29 +1,27 @@
 ---
-import MainLayout from '../layouts/MainLayout.astro';
-import pool from '../lib/db';
+import MainLayout from '../../layouts/MainLayout.astro';
+import pool from '../../lib/db';
 
-const pageTitle = 'Cuadernos';
-const pageDescription = 'Descubre nuestra selección de cuadernos de alta calidad.';
+const pageTitle = 'Lápices';
+const pageDescription = 'Descubre nuestra selección de lápices de alta calidad.';
 
 // Fetch notebooks from the database
 let productos = [];
 
 try {
-  // Get all products that contain 'cuaderno' in the name or description
+  // Get all products that contain 'lapices' in the name or description
   const [results] = await pool.query(`
     SELECT * 
     FROM productos 
-    WHERE LOWER(nombre) LIKE '%cuaderno%' 
-       OR LOWER(descripcion) LIKE '%cuaderno%'
-       OR LOWER(nombre) LIKE '%libreta%' 
-       OR LOWER(descripcion) LIKE '%libreta%'
+    WHERE LOWER(nombre) LIKE '%lapiz%'   
+       OR LOWER(descripcion) LIKE '%lapiz%'
     ORDER BY nombre
   `);
   
   productos = Array.isArray(results) ? results : [];
   
 } catch (error) {
-  console.error('Error al cargar los cuadernos:', error);
+  console.error('Error al cargar los lápices:', error);
 }
 ---
 
@@ -46,7 +44,7 @@ try {
     <!-- Cuadernos Section -->
     <section class="py-12 px-4 sm:px-6 lg:px-8">
       <div class="max-w-7xl mx-auto">
-        <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Nuestra Colección de Cuadernos</h1>
+        <h1 class="text-3xl font-bold text-gray-900 mb-8 text-center">Nuestra Colección de Lápices</h1>
         
    
     </section>
@@ -92,13 +90,13 @@ try {
           </div>
         ) : (
           <div class="text-center py-8">
-            <p class="text-gray-500 mb-4">No se encontraron cuadernos en este momento.</p>
+            <p class="text-gray-500 mb-4">No se encontraron lápices en este momento.</p>
             <p class="text-sm text-gray-400">Por favor, intente más tarde o contacte al administrador.</p>
             <pre class="mt-4 text-left bg-gray-100 p-4 rounded text-xs text-gray-600 overflow-x-auto">
               Debug Info:
               {JSON.stringify({
                 hasProducts: productos.length > 0,
-                firstProduct: productos[0],
+                firstProduct: productos[0], 
                 allProducts: productos
               }, null, 2)}
             </pre>

@@ -1,5 +1,7 @@
 import { query } from '../../lib/query';
 
+
+
 // Manejar solicitudes GET para obtener todos los productos o uno específico por ID
 export async function GET({ url }) {
   try {

@@ -37,13 +37,6 @@ const products = [
     icon: '🎨',
     category: 'manualidades'
   },
-  {
-    id: 6,
-    name: 'Mochilas y Loncheras',
-    description: 'Mochilas escolares, loncheras y estuches de diferentes tamaños y diseños.',
-    icon: '🎒',
-    category: 'escolar'
-  }
 ];
 ---
 
@@ -58,37 +51,7 @@ const products = [
       </p>
     </div>
 
-    <!-- Filtros por categoría -->
-    <div class="flex flex-wrap justify-center gap-3 mb-8">
-      <button 
-        class="px-5 py-2.5 rounded-full bg-indigo-600 text-white hover:bg-indigo-700 transition-all duration-200 shadow-sm hover:shadow-md flex items-center"
-        data-category="all"
-      >
-        <i class="fas fa-th-large mr-2"></i>
-        <span>Todos</span>
-      </button>
-      <button 
-        class="px-5 py-2.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md flex items-center"
-        data-category="escolar"
-      >
-        <i class="fas fa-graduation-cap mr-2"></i>
-        <span>Escolares</span>
-      </button>
-      <button 
-        class="px-5 py-2.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md flex items-center"
-        data-category="oficina"
-      >
-        <i class="fas fa-briefcase mr-2"></i>
-        <span>Oficina</span>
-      </button>
-      <button 
-        class="px-5 py-2.5 rounded-full bg-white border border-gray-300 text-gray-700 hover:bg-gray-50 transition-all duration-200 shadow-sm hover:shadow-md flex items-center"
-        data-category="manualidades"
-      >
-        <i class="fas fa-paint-brush mr-2"></i>
-        <span>Manualidades</span>
-      </button>
-    </div>
+  
 
     <!-- Grid de productos -->
     <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -96,7 +59,14 @@ const products = [
         <button 
           class="w-full bg-white rounded-xl shadow-sm overflow-hidden hover:shadow-lg transition-all duration-300 product-card border border-gray-100 text-left focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
           data-category={product.category}
-          onclick={product.id === 2 ? "window.location.href='/cuadernos'" : `window.location.href='#${product.category}'`}
+          onclick={
+            product.id === 1 ? "window.location.href='/utiles/utiles'" : 
+            product.id === 2 ? "window.location.href='/cuadernos'" :
+            product.id === 3 ? "window.location.href='/papel'" :
+            product.id === 4 ? "window.location.href='/oficina'" :
+            product.id === 5 ? "window.location.href='/arte'" :
+            `window.location.href='#${product.category}'`
+          }
         >
           <div class="p-6">
             <div class="flex items-center justify-center w-16 h-16 mx-auto mb-4 rounded-full bg-indigo-100 text-3xl">
@@ -108,16 +78,12 @@ const products = [
             <p class="text-gray-600 text-sm text-center">
               {product.description}
             </p>
-            <div class="mt-4 flex justify-center">
-              <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-indigo-100 text-indigo-800">
-                {product.category === 'escolar' ? 'Escolar' : product.category === 'oficina' ? 'Oficina' : 'Manualidades'}
-              </span>
-            </div>
           </div>
         </button>
       ))}
     </div>
   </div>
+  
 </section>
 
 <!-- Script para el filtrado de productos -->

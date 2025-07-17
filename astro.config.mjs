@@ -3,11 +3,13 @@ import { defineConfig } from 'astro/config';
 import tailwind from '@astrojs/tailwind';
 import node from '@astrojs/node';
 
+// Configuración básica de Astro
 export default defineConfig({
   output: 'server',
   adapter: node({
     mode: 'standalone'
   }),
+  base: '/',
   integrations: [tailwind()],
   server: {
     port: 3000,
@@ -15,19 +17,13 @@ export default defineConfig({
     headers: {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
-    },
-    open: true
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Requested-With',
+      'Access-Control-Allow-Credentials': 'true'
+    }
   },
   vite: {
     server: {
-      proxy: {
-        '/api': {
-          target: 'http://localhost:3000',
-          changeOrigin: true,
-          secure: false
-        }
-      }
+      proxy: {}
     }
   }
 });
